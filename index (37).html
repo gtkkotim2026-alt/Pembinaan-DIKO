@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1a56db">
+<title>Pembinaan Disiplin – Dinas Pendidikan Kotim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f172a;--mu:#64748b;--ac:#1a56db;--bg:#f4f6fb;--ln:#e2e8f0;--nv:#0b1b3a}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg);display:flex;min-height:100vh}
+aside{width:250px;background:var(--nv);color:#cbd5e1;padding:20px 14px;position:sticky;top:0;height:100vh;overflow:auto;flex-shrink:0}
+aside .br{color:#fff;font-weight:800;font-size:17px;line-height:1.2}aside .br small{display:block;font-weight:500;font-size:11px;color:#94a3b8;margin-top:4px}
+nav{margin:18px 0}nav a{display:flex;gap:10px;padding:9px 10px;border-radius:8px;color:#cbd5e1;text-decoration:none;font-weight:500}
+nav a i{font-style:normal;width:20px;color:#60a5fa;font-weight:700}nav a:hover{background:#13285a}nav a.on{background:var(--ac);color:#fff}nav a.on i{color:#fff}
+nav hr{border:0;border-top:1px solid #1e3a6e;margin:8px 0}
+.bk{display:flex;gap:6px}.bk button{flex:1;font-size:12px;padding:7px;background:#13285a;color:#cbd5e1;border:1px solid #1e3a6e}
+main{flex:1;padding:28px;min-width:0}h1{margin:0 0 4px;font-size:22px;font-weight:800}.sub{color:var(--mu);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:18px;align-items:start}.one{max-width:760px}
+.card{background:#fff;border:1px solid var(--ln);border-radius:14px;padding:18px}.card h2{margin:0 0 12px;font-size:15px}
+label{display:block;font-size:12px;font-weight:700;color:#334155;margin-bottom:10px}
+input,select,textarea{display:block;width:100%;margin-top:4px;padding:9px 10px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;font-weight:400;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe;border-color:var(--ac)}textarea{resize:vertical}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;font-weight:700;border:0;border-radius:8px;padding:9px 16px;background:var(--ac);color:#fff;cursor:pointer}
+button.ghost{background:#eef2ff;color:var(--ac);padding:6px 11px;font-size:12px}button.red{background:#fee2e2;color:#b91c1c}.act{display:flex;gap:8px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--ln)}.row:last-child{border:0}
+.row small{display:block;color:var(--mu)}.row div:last-child{display:flex;gap:6px;flex-shrink:0}
+.b{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;background:#e2e8f0}.s1{background:#fef3c7;color:#92400e}.s2{background:#ffedd5;color:#9a3412}.s3{background:#fee2e2;color:#b91c1c}
+.empty{color:var(--mu);padding:14px 0}.chips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}.chips code{background:#eef2ff;color:#3730a3;padding:2px 7px;border-radius:6px;font-size:12px}
+.qa{border-left:3px solid var(--ac);padding-left:10px;margin-bottom:6px}
+#print{display:none}
+@media(max-width:860px){body{display:block}aside{width:auto;height:auto;position:static}nav{display:flex;overflow:auto;gap:4px}nav a{white-space:nowrap}nav hr{display:none}.grid{grid-template-columns:1fr}main{padding:16px}}
+@media print{body>*:not(#print){display:none!important}#print{display:block;font:12pt 'Times New Roman',serif;color:#000}@page{size:A4;margin:18mm 20mm}
+.kop{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:18px;line-height:1.35}.kop .big{font-size:16pt}
+.body{white-space:pre-wrap;line-height:1.55;text-align:justify}.c{text-align:center;text-decoration:underline;margin:0 0 14px}
+.ttd{display:flex;justify-content:flex-end;margin-top:26px;break-inside:avoid}.sig{display:grid;grid-template-columns:1fr 1fr;gap:26px 40px;margin-top:26px;text-align:center;break-inside:avoid}.mt{display:inline-block;border:1px solid #000;padding:2px 8px;font-size:9pt;margin:6px 0}}
+</style></head><body>
+<aside><div class="br">PEMBINAAN DISIPLIN<small>Dinas Pendidikan Kab. Kotawaringin Timur<br>Modul untuk DIKO</small></div><nav id="nav"></nav>
+<div class="bk"><button onclick="exp()">⬇ Cadangan</button><button onclick="$('#imp').click()">⬆ Pulihkan</button><input id="imp" type="file" accept=".json" hidden onchange="imp(this)"></div></aside>
+<main id="main"></main><div id="print"></div>
+<script>
+/* === ISI DENGAN URL WEB APP DIKO (sama dengan APP_CONFIG.API_URL di config.js) === */
+const API_URL='GANTI_DENGAN_URL_WEB_APP_DIKO';
+const K='pd_v1',today=new Date().toISOString().slice(0,10);
+const D={panggil:`Nomor      : {{no_surat}}
+Sifat      : Segera
+Lampiran   : -
+Hal        : Pemanggilan {{panggilan_ke}}
+
+Yth. {{nama}}
+NIP. {{nip}}
+{{jabatan}} pada {{sekolah}}
+di Tempat
+
+Berdasarkan laporan tanggal {{tgl_laporan}} perihal dugaan pelanggaran disiplin berupa {{pelanggaran}}, dengan ini Saudara dipanggil untuk menghadap pada:
+
+Hari/Tanggal : {{hari_tgl}}
+Pukul        : {{jam}}
+Tempat       : {{tempat}}
+Acara        : Pemeriksaan dan Pembinaan Disiplin
+
+Demikian disampaikan, atas perhatian dan kehadiran Saudara diucapkan terima kasih.`,
+bap:`Pada hari ini {{hari_tgl}}, bertempat di {{tempat}}, kami yang bertanda tangan di bawah ini:
+Nama        : {{pw_nama}}
+NIP         : {{pw_nip}}
+Jabatan     : {{pw_jabatan}}
+selaku Pemeriksa, dengan disaksikan oleh {{s1_nama}} ({{s1_jabatan}}) dan {{s2_nama}} ({{s2_jabatan}}), telah melakukan pemeriksaan terhadap:
+Nama        : {{nama}}
+NIP         : {{nip}}
+Pangkat/Gol.: {{pangkat}}
+Jabatan     : {{jabatan}}
+Unit Kerja  : {{sekolah}}
+
+Hasil pemeriksaan:
+
+{{daftar_qa}}
+
+Demikian Berita Acara Pemeriksaan ini dibuat dengan sebenarnya dan ditandatangani oleh pihak-pihak yang bersangkutan.`,
+bapQ:`Apakah Saudara {{nama}} dalam keadaan sehat dan bersedia diperiksa?
+Apakah Saudara mengetahui alasan pemanggilan hari ini?
+Apakah benar Saudara melakukan perbuatan berupa {{pelanggaran}}?
+Bagaimana kronologi kejadian tersebut menurut Saudara?
+Apa yang melatarbelakangi perbuatan tersebut?
+Apakah Saudara menyadari bahwa perbuatan tersebut melanggar ketentuan disiplin?
+Apakah Saudara bersedia memperbaiki diri dan tidak mengulangi perbuatan tersebut?`,
+pern:`Yang bertanda tangan di bawah ini:
+Nama         : {{nama}}
+NIP          : {{nip}}
+Pangkat/Gol. : {{pangkat}}
+Jabatan      : {{jabatan}}
+Unit Kerja   : {{sekolah}}
+
+Dengan ini menyatakan bahwa saya tidak akan mengulangi pelanggaran disiplin berupa {{pelanggaran}} sebagaimana laporan tanggal {{tgl_laporan}}. Apabila di kemudian hari saya mengulangi perbuatan tersebut, saya bersedia dikenakan sanksi sesuai ketentuan peraturan perundang-undangan yang berlaku.
+
+Demikian surat pernyataan ini saya buat dengan sebenar-benarnya dan tanpa paksaan dari pihak mana pun.`,
+limpah:`Nomor      : {{no_surat}}
+Sifat      : Segera
+Lampiran   : {{lampiran}}
+Hal        : Pelimpahan Pembinaan Disiplin
+
+Yth. {{kepada}}
+di Tempat
+
+Dengan hormat,
+Bersama ini kami limpahkan penanganan dugaan pelanggaran disiplin atas nama {{nama}}, NIP {{nip}}, {{jabatan}} pada {{sekolah}}, berupa {{pelanggaran}}, sebagaimana laporan tanggal {{tgl_laporan}}.
+
+Pembinaan di tingkat Dinas Pendidikan telah dilaksanakan melalui pemanggilan dan pemeriksaan. Berkas terlampir untuk diproses lebih lanjut sesuai ketentuan peraturan perundang-undangan.
+
+Demikian disampaikan, atas perhatian Saudara diucapkan terima kasih.`};
+let DB=JSON.parse(localStorage.getItem(K)||'null')||{lap:[],pg:[],bap:[],pn:[],pl:[],dok:[],tpl:{},ttd:{kota:'Sampit',i1:'PEMERINTAH KABUPATEN KOTAWARINGIN TIMUR',i2:'DINAS PENDIDIKAN',alamat:'',nama:'Yolanda Lonita Fenisia, S.STP., M.Si',nip:'198104141999122001',pangkat:'Pembina Tingkat I',jab:'Kepala Dinas Pendidikan'}};
+DB.tpl={...D,...DB.tpl};
+const $=s=>document.querySelector(s),g=id=>$('#'+id).value,uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const h=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const O={day:'numeric',month:'long',year:'numeric'},tgl=d=>d?new Date(d+'T00:00').toLocaleDateString('id-ID',O):'…',hari=d=>d?new Date(d+'T00:00').toLocaleDateString('id-ID',{weekday:'long',...O}):'…';
+const ST=['Laporan','Pemanggilan I','Pemanggilan II','Pelimpahan'],L=id=>DB.lap.find(x=>x.id==id)||{};
+const fill=(t,m)=>t.replace(/\{\{(\w+)\}\}/g,(_,k)=>m[k]||'…');
+function save(){try{localStorage.setItem(K,JSON.stringify(DB));return true}catch(e){alert('Penyimpanan browser penuh. Hapus dokumen lama atau unduh cadangan.');return false}}
+const inp=(id,l,v='',t='text')=>`<label>${l}<input id="${id}" type="${t}" value="${h(v)}"></label>`;
+const ta=(id,l,v='',r=4)=>`<label>${l}<textarea id="${id}" rows="${r}">${h(v)}</textarea></label>`;
+const sel=(id,l,o,v,ex='')=>`<label>${l}<select id="${id}" ${ex}>${o.map(x=>{const[a,b]=Array.isArray(x)?x:[x,x];return`<option value="${h(a)}"${a==v?' selected':''}>${h(b)}</option>`}).join('')}</select></label>`;
+const lapO=()=>[['','— pilih laporan —'],...DB.lap.map(x=>[x.id,`${x.nama} · ${x.pelanggaran}`])];
+const lm=l=>({nama:l.nama,nip:l.nip,pangkat:l.pangkat,jabatan:l.jabatan,sekolah:l.sekolah,pelanggaran:l.pelanggaran,tgl_laporan:tgl(l.tgl),no_laporan:l.no});
+const tm=()=>({ttd_nama:DB.ttd.nama,ttd_nip:DB.ttd.nip,ttd_jabatan:DB.ttd.jab,ttd_pangkat:DB.ttd.pangkat});
+const kop=()=>{const t=DB.ttd;return`<div class="kop"><b>${h(t.i1)}</b><br><b class="big">${h(t.i2)}</b>${t.alamat?`<br><small>${h(t.alamat)}</small>`:''}</div>`};
+const ttdB=tg=>{const t=DB.ttd;return`<div class="ttd"><div>${h(t.kota)}, ${tgl(tg)}<br>${h(t.jab)},<br><br><br><br><b><u>${h(t.nama)||'………'}</u></b><br>${h(t.pangkat)}<br>NIP. ${h(t.nip)||'………'}</div></div>`};
+const sg=(r,n,s='')=>`<div>${r}<br><br><br><br><b><u>${h(n)||'………'}</u></b><br>${s}</div>`;
+const cetak=x=>{$('#print').innerHTML=x;print()};
+const adv=(id,s)=>{const l=DB.lap.find(a=>a.id==id);if(l&&ST.indexOf(s)>ST.indexOf(l.status))l.status=s};
+const rowH=(t,s,pr,k,id)=>`<div class="row"><div><b>${h(t)}</b><small>${h(s)}</small></div><div>${pr?`<button class="ghost" onclick="${pr}('${id}')">Cetak</button>`:''}<button class="ghost red" onclick="del('${k}','${id}')">Hapus</button></div></div>`;
+const del=(k,id)=>{if(confirm('Hapus data ini?')){DB[k]=DB[k].filter(a=>a.id!=id);if(k=='lap')['pg','bap','pn','pl','dok'].forEach(x=>DB[x]=DB[x].filter(a=>a.lp!=id));save();render()}};
+const lst=(k,f,pr)=>DB[k].length?DB[k].map(f).join(''):'<div class="empty">Belum ada data.</div>';
+const pg=(t,s,body)=>`<h1>${t}</h1><p class="sub">${s}</p>${body}`;
+let ed=null,sl='';
+const GR={tk:sessionStorage.getItem('pdtk'),refs:[],rows:null,err:''};
+async function api(action,p={}){if(!API_URL||API_URL.includes('GANTI'))throw Error('API_URL belum diisi di index.html');
+let r;try{r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:GR.tk,...p})})}catch(e){throw Error('Tidak dapat terhubung ke server DIKO.')}
+const j=await r.json();if(!j.ok){if(j.expired){GR.tk=null;sessionStorage.removeItem('pdtk')}throw Error(j.error||'Terjadi kesalahan')}return j}
+const sekNama=n=>(GR.refs.find(x=>x.npsn===n)||{}).nama||n||'';
+async function loadGuru(){if(!GR.tk||GR.rows)return;try{GR.rows=(await api('list',{entity:'guru'})).rows||[];GR.err=''}catch(e){GR.err=e.message}render()}
+async function loginDiko(){try{const r=await api('login',{username:g('gu'),password:g('gp')});GR.tk=r.token;GR.refs=r.refs||[];sessionStorage.setItem('pdtk',r.token);sessionStorage.setItem('pdrf',JSON.stringify(GR.refs));GR.rows=null;GR.err='';render();loadGuru()}catch(e){alert(e.message)}}
+function logoutDiko(){GR.tk=null;GR.rows=null;sessionStorage.removeItem('pdtk');render()}
+function cariGuru(q){q=q.trim().toLowerCase();const b=$('#gr');if(q.length<2||!GR.rows){b.innerHTML='';return}
+const m=GR.rows.filter(x=>(x.nama||'').toLowerCase().includes(q)||String(x.nip||'').includes(q)).slice(0,8);
+b.innerHTML=m.length?m.map(x=>`<div class="row"><div><b>${h(x.nama)}</b><small>${h(x.nip||x.nuptk||'tanpa NIP')} · ${h(x.jabatan||'')} · ${h(sekNama(x.npsn))}</small></div><div><button class="ghost" onclick="pilihGuru('${x.id}')">Pilih</button></div></div>`).join(''):'<div class="empty">Tidak ditemukan. Isi manual di bawah.</div>'}
+function pilihGuru(id){const x=GR.rows.find(a=>a.id==id);if(!x)return;const set=(i,v)=>{if(v)$('#'+i).value=v};set('nm',x.nama);set('nip',x.nip||x.nuptk);set('pk',x.golongan||x.pangkat);set('jb',x.jabatan);set('sk',sekNama(x.npsn));$('#gr').innerHTML='';$('#gq').value=''}
+const gpick=()=>`<div style="background:#eef2ff;border-radius:10px;padding:12px;margin-bottom:14px"><b style="font-size:12px">Database Guru DIKO</b>${GR.tk?`<span class="b" style="margin-left:6px;background:#dcfce7;color:#166534">Terhubung</span> <button class="ghost" style="float:right" onclick="logoutDiko()">Keluar</button>${GR.rows?`<input id="gq" placeholder="Ketik nama atau NIP guru (min. 2 huruf)…" oninput="cariGuru(this.value)" autocomplete="off"><div id="gr"></div><small style="color:var(--mu)">${GR.rows.length} data guru dimuat. Pilih guru agar isian terisi otomatis.</small>`:`<div class="empty">${GR.err?h(GR.err):'Memuat data guru…'}</div>`}`:`<div class="r2">${inp('gu','Username DIKO')}${inp('gp','Password','','password')}</div><button onclick="loginDiko()">Masuk &amp; hubungkan</button><small style="display:block;color:var(--mu);margin-top:6px">Gunakan akun DIKO (Admin Dinas/Pimpinan). Tanpa login, data guru diisi manual.</small>`}</div>`;
+
+const P={
+lap(){const x=DB.lap.find(a=>a.id==ed)||{};return pg('Laporan Tindakan Disiplin','Awal proses: laporan → pemanggilan I → pemanggilan II → pelimpahan.',`<div class="grid"><section class="card"><h2>${ed?'Ubah':'Input'} Laporan</h2>${gpick()}
+${inp('no','Nomor laporan',x.no)}${inp('tg','Tanggal laporan',x.tgl||today,'date')}${inp('nm','Nama guru',x.nama)}<div class="r2">${inp('nip','NIP',x.nip)}${inp('pk','Pangkat/Gol.',x.pangkat)}</div>${inp('jb','Jabatan',x.jabatan)}${inp('sk','Satuan pendidikan',x.sekolah)}${inp('pl','Jenis pelanggaran',x.pelanggaran)}${ta('ur','Uraian kejadian',x.uraian)}${inp('pp','Pelapor',x.pelapor)}${sel('st','Proses',ST,x.status||ST[0])}
+<div class="act"><button onclick="saveLap()">Simpan</button>${ed?'<button class="ghost" onclick="ed=null;render()">Batal</button>':''}</div></section>
+<section class="card"><h2>Daftar Laporan (${DB.lap.length})</h2>${lst('lap',x=>`<div class="row"><div><b>${h(x.nama)}</b> <span class="b s${ST.indexOf(x.status)}">${x.status}</span><small>${h(x.pelanggaran)} · ${tgl(x.tgl)}</small></div><div><button class="ghost" onclick="ed='${x.id}';render()">Ubah</button><button class="ghost red" onclick="del('lap','${x.id}')">Hapus</button></div></div>`)}</section></div>`)},
+pg(){return pg('Pemanggilan','Isian tersimpan dan dicetak sesuai template (menu 6).',`<div class="grid"><section class="card"><h2>Input Pemanggilan</h2>${sel('lp','Laporan',lapO(),'')}${sel('ke','Pemanggilan ke',['I','II'],'I')}${inp('no','Nomor surat')}${inp('ts','Tanggal surat',today,'date')}${inp('ht','Hari/tanggal menghadap','','date')}${inp('jm','Pukul','09.00 WITA')}${inp('tm','Tempat','Kantor Dinas Pendidikan')}<button onclick="savePg()">Simpan</button></section>
+<section class="card"><h2>Tersimpan</h2>${lst('pg',r=>rowH(`Pemanggilan ${r.ke} – ${L(r.lp).nama}`,`${r.no} · ${hari(r.ht)}`,'prPg','pg',r.id))}</section></div>`)},
+bap(){const l=L(sl),qs=DB.tpl.bapQ.split('\n').filter(Boolean),pr=(p,t,n='',j='')=>`<div class="r2">${inp(p+'n','Nama '+t,n)}${inp(p+'j','Jabatan',j)}</div>`;
+return pg('Berita Acara Pemeriksaan','Pertanyaan otomatis dari template BAP (menu 7); isi jawaban lalu simpan.',`<div class="grid"><section class="card"><h2>Input BAP</h2>${sel('lp','Laporan',lapO(),sl,'onchange="sl=this.value;render()"')}
+${l.id?`<p class="sub">Guru diperiksa: <b>${h(l.nama)}</b> · NIP ${h(l.nip)}</p>${inp('ht','Tanggal pemeriksaan',today,'date')}${inp('tm','Tempat','Kantor Dinas Pendidikan')}${pr('pw','Pewawancara','EDIE SUCIPTO, S.Pd.I.,M.Pd','Kepala Bidang Pembinaan Ketenagaan')}${inp('pwp','NIP pewawancara','19810903 200904 1 001')}${pr('s1','Saksi I')}${pr('s2','Saksi II')}<h2>Pertanyaan & Jawaban</h2>${qs.map((q,i)=>`<div class="qa">${ta('a'+i,(i+1)+'. '+h(fill(q,lm(l))),'',2)}</div>`).join('')}<button onclick="saveBap()">Simpan BAP</button>`:'<div class="empty">Pilih laporan terlebih dahulu.</div>'}</section>
+<section class="card"><h2>Tersimpan</h2>${lst('bap',r=>rowH('BAP – '+L(r.lp).nama,`${hari(r.ht)} · Pemeriksa: ${r.pw.n}`,'prBap','bap',r.id))}</section></div>`)},
+pn(){const l=L(sl);return pg('Surat Pernyataan','Guru menyatakan tidak akan mengulangi pelanggaran.',`<div class="grid"><section class="card"><h2>Input Pernyataan</h2>${sel('lp','Laporan',lapO(),sl,'onchange="sl=this.value;render()"')}${l.id?`${inp('tg','Tanggal',today,'date')}${ta('tx','Isi pernyataan (dapat diubah)',fill(DB.tpl.pern,lm(l)),14)}<button onclick="savePn()">Simpan</button>`:'<div class="empty">Pilih laporan terlebih dahulu.</div>'}</section>
+<section class="card"><h2>Tersimpan</h2>${lst('pn',r=>rowH('Pernyataan – '+L(r.lp).nama,tgl(r.tg),'prPn','pn',r.id))}</section></div>`)},
+pl(){return pg('Surat Pelimpahan ke BKPSDM','Dicetak sesuai template (menu 8).',`<div class="grid"><section class="card"><h2>Input Pelimpahan</h2>${sel('lp','Laporan',lapO(),'')}${inp('no','Nomor surat')}${inp('ts','Tanggal surat',today,'date')}${inp('lamp','Lampiran','1 (satu) berkas')}${inp('kpd','Kepada','Kepala BKPSDM Kabupaten Kotawaringin Timur')}<button onclick="savePl()">Simpan</button></section>
+<section class="card"><h2>Tersimpan</h2>${lst('pl',r=>rowH('Pelimpahan – '+L(r.lp).nama,`${r.no} · ${tgl(r.ts)}`,'prPl','pl',r.id))}</section></div>`)},
+tp:()=>tpl('panggil','Template Surat Pemanggilan',['no_surat','panggilan_ke','hari_tgl','jam','tempat']),
+tb(){return pg('Template BAP','Teks pembuka BAP dan daftar pertanyaan (satu pertanyaan per baris).',`<div class="card one">${chips(['pw_nama','pw_nip','pw_jabatan','s1_nama','s1_jabatan','s2_nama','s2_jabatan','hari_tgl','tempat','daftar_qa'])}${ta('t1','Teks BAP',DB.tpl.bap,16)}${ta('t2','Pertanyaan otomatis',DB.tpl.bapQ,8)}<div class="act"><button onclick="saveT('bap','t1');saveT('bapQ','t2')">Simpan</button><button class="ghost" onclick="DB.tpl.bap=D.bap;DB.tpl.bapQ=D.bapQ;save();render()">Kembalikan default</button></div></div>`)},
+tl:()=>tpl('limpah','Template Surat Pelimpahan',['no_surat','lampiran','kepada']),
+ttd(){const t=DB.ttd;return pg('Penandatangan Surat Dinas','Dipakai pada kop dan tanda tangan semua surat.',`<div class="card one">${inp('i1','Kop baris 1',t.i1)}${inp('i2','Kop baris 2 (instansi)',t.i2)}${inp('al','Alamat kop',t.alamat)}${inp('ko','Kota penandatanganan',t.kota)}${inp('n','Nama penandatangan',t.nama)}<div class="r2">${inp('p','NIP',t.nip)}${inp('pk','Pangkat/Gol.',t.pangkat)}</div>${inp('j','Jabatan',t.jab)}<button onclick="saveTtd()">Simpan</button></div>`)},
+dok(){const J=['Pemanggilan I','Pemanggilan II','BAP','Surat Pernyataan','Surat Pelimpahan'];return pg('Dokumen Pemeriksaan','Unggah hasil scan/foto bertanda tangan (PDF/JPG/PNG, maks. 1,5 MB), terhubung ke data laporan awal.',`<div class="grid"><section class="card"><h2>Unggah Dokumen</h2>${sel('lp','Laporan',lapO(),sl)}${sel('jn','Jenis dokumen',J,'')}<label>File<input id="fl" type="file" accept=".pdf,image/*"></label><button onclick="upDok()">Unggah</button></section>
+<section class="card"><h2>Berkas per Laporan</h2>${DB.lap.map(l=>{const d=DB.dok.filter(x=>x.lp==l.id);return`<div class="row" style="display:block"><b>${h(l.nama)}</b> <span class="b s${ST.indexOf(l.status)}">${l.status}</span><small>${h(l.pelanggaran)} · laporan ${tgl(l.tgl)}</small>${d.length?d.map(x=>`<div class="row"><div><a href="${x.data}" download="${h(x.jn+' - '+l.nama+' - '+x.nm)}">${h(x.jn)}</a><small>${h(x.nm)}</small></div><div><button class="ghost red" onclick="del('dok','${x.id}')">Hapus</button></div></div>`).join(''):'<small>Belum ada berkas.</small>'}</div>`}).join('')||'<div class="empty">Belum ada laporan.</div>'}</section></div>`)}};
+const M=[['lap','Laporan Tindakan'],['pg','Pemanggilan'],['bap','BAP'],['pn','Surat Pernyataan'],['pl','Surat Pelimpahan'],['tp','Template Pemanggilan'],['tb','Template BAP'],['tl','Template Pelimpahan'],['ttd','Penandatangan'],['dok','Dokumen']];
+const chips=a=>`<div class="chips">${['nama','nip','pangkat','jabatan','sekolah','pelanggaran','tgl_laporan','tgl_surat',...a].map(c=>`<code>{{${c}}}</code>`).join('')}</div>`;
+function tpl(k,t,a){return pg(t,'Gunakan kode berikut; akan diisi otomatis dari data laporan.',`<div class="card one">${chips(a)}${ta('t1','Isi template',DB.tpl[k],20)}<div class="act"><button onclick="saveT('${k}','t1')">Simpan</button><button class="ghost" onclick="DB.tpl['${k}']=D['${k}'];save();render()">Kembalikan default</button></div></div>`)}
+function saveT(k,id){DB.tpl[k]=g(id);if(save())alert('Template tersimpan.')}
+function saveTtd(){DB.ttd={i1:g('i1'),i2:g('i2'),alamat:g('al'),kota:g('ko'),nama:g('n'),nip:g('p'),pangkat:g('pk'),jab:g('j')};if(save())alert('Tersimpan.')}
+function saveLap(){if(!g('nm')||!g('pl'))return alert('Nama guru dan jenis pelanggaran wajib diisi.');const x={id:ed||uid(),no:g('no'),tgl:g('tg'),nama:g('nm'),nip:g('nip'),pangkat:g('pk'),jabatan:g('jb'),sekolah:g('sk'),pelanggaran:g('pl'),uraian:g('ur'),pelapor:g('pp'),status:g('st')};ed?DB.lap[DB.lap.findIndex(a=>a.id==ed)]=x:DB.lap.push(x);ed=null;save();render()}
+const need=()=>g('lp')||(alert('Pilih laporan terlebih dahulu.'),0);
+function savePg(){const lp=need();if(!lp)return;DB.pg.push({id:uid(),lp,ke:g('ke'),no:g('no'),ts:g('ts'),ht:g('ht'),jm:g('jm'),tm:g('tm')});adv(lp,'Pemanggilan '+g('ke'));save();render()}
+function saveBap(){const lp=need();if(!lp)return;const qs=DB.tpl.bapQ.split('\n').filter(Boolean);DB.bap.push({id:uid(),lp,ht:g('ht'),tm:g('tm'),pw:{n:g('pwn'),j:g('pwj'),nip:g('pwp')},s1:{n:g('s1n'),j:g('s1j')},s2:{n:g('s2n'),j:g('s2j')},qa:qs.map((q,i)=>({q:fill(q,lm(L(lp))),a:g('a'+i)}))});save();sl='';render()}
+function savePn(){const lp=need();if(!lp)return;DB.pn.push({id:uid(),lp,tg:g('tg'),tx:g('tx')});save();sl='';render()}
+function savePl(){const lp=need();if(!lp)return;DB.pl.push({id:uid(),lp,no:g('no'),ts:g('ts'),lamp:g('lamp'),kpd:g('kpd')});adv(lp,'Pelimpahan');save();render()}
+function upDok(){const lp=need();if(!lp)return;const f=$('#fl').files[0];if(!f)return alert('Pilih file.');if(f.size>1.5e6)return alert('Ukuran file maksimal 1,5 MB.');const r=new FileReader();r.onload=()=>{DB.dok.push({id:uid(),lp,jn:g('jn'),nm:f.name,data:r.result});sl=lp;if(save())render()};r.readAsDataURL(f)}
+const prPg=id=>{const r=DB.pg.find(a=>a.id==id),l=L(r.lp);cetak(kop()+`<div class="body">${h(fill(DB.tpl.panggil,{...lm(l),...tm(),no_surat:r.no,tgl_surat:tgl(r.ts),panggilan_ke:r.ke,hari_tgl:hari(r.ht),jam:r.jm,tempat:r.tm}))}</div>`+ttdB(r.ts))};
+const prBap=id=>{const r=DB.bap.find(a=>a.id==id),l=L(r.lp),qa=r.qa.map((x,i)=>`${i+1}. Pertanyaan : ${x.q}\n    Jawaban    : ${x.a||'-'}`).join('\n\n');
+cetak(kop()+`<h3 class="c">BERITA ACARA PEMERIKSAAN</h3><div class="body">${h(fill(DB.tpl.bap,{...lm(l),hari_tgl:hari(r.ht),tempat:r.tm,pw_nama:r.pw.n,pw_nip:r.pw.nip,pw_jabatan:r.pw.j,s1_nama:r.s1.n,s1_jabatan:r.s1.j,s2_nama:r.s2.n,s2_jabatan:r.s2.j,daftar_qa:qa}))}</div><div class="sig">${sg('Pemeriksa',r.pw.n,'NIP. '+h(r.pw.nip))}${sg('Yang Diperiksa',l.nama,'NIP. '+h(l.nip))}${sg('Saksi I',r.s1.n)}${sg('Saksi II',r.s2.n)}</div>`)};
+const prPn=id=>{const r=DB.pn.find(a=>a.id==id),l=L(r.lp);cetak(kop()+`<h3 class="c">SURAT PERNYATAAN</h3><div class="body">${h(r.tx)}</div><div class="sig"><div>Mengetahui,<br>${h(DB.ttd.jab)}<br><br><br><br><b><u>${h(DB.ttd.nama)||'………'}</u></b><br>NIP. ${h(DB.ttd.nip)}</div><div>${h(DB.ttd.kota)}, ${tgl(r.tg)}<br>Yang membuat pernyataan,<br><span class="mt">Meterai</span><br><b><u>${h(l.nama)}</u></b><br>NIP. ${h(l.nip)}</div></div>`)};
+const prPl=id=>{const r=DB.pl.find(a=>a.id==id),l=L(r.lp);cetak(kop()+`<div class="body">${h(fill(DB.tpl.limpah,{...lm(l),...tm(),no_surat:r.no,tgl_surat:tgl(r.ts),lampiran:r.lamp,kepada:r.kpd}))}</div>`+ttdB(r.ts))};
+function exp(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB)],{type:'application/json'}));a.download='pembinaan-disiplin-'+today+'.json';a.click()}
+function imp(i){const f=i.files[0];if(!f||!confirm('Data saat ini akan diganti dengan cadangan. Lanjutkan?'))return;const r=new FileReader();r.onload=()=>{try{DB=JSON.parse(r.result);DB.tpl={...D,...DB.tpl};save();render()}catch(e){alert('File cadangan tidak valid.')}};r.readAsText(f)}
+function render(){const k=P[location.hash.slice(1)]?location.hash.slice(1):'lap';$('#nav').innerHTML=M.map(([a,t],i)=>`<a href="#${a}" class="${a==k?'on':''}"><i>${i+1}</i>${t}</a>${i==4||i==7?'<hr>':''}`).join('');$('#main').innerHTML=P[k]();scrollTo(0,0)}
+addEventListener('hashchange',()=>{sl='';ed=null;render()});try{GR.refs=JSON.parse(sessionStorage.getItem('pdrf')||'[]')}catch(e){}
+render();loadGuru();
+</script></body></html>
