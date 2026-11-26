@@ -1,7 +1,7 @@
 /* Konfigurasi Pembinaan Disiplin — ubah file ini saja, tidak perlu menyentuh index.html */
 window.APP_CONFIG = {
   // URL Web App Google Apps Script DIKO (sama dengan APP_CONFIG.API_URL di config.js DIKO)
-  API_URL: 'GANTI_DENGAN_URL_WEB_APP_DIKO',
+  API_URL: 'https://script.google.com/macros/s/AKfycbwLeWoTUL7AaKJko5PMQ_o65ZTFFUM9qJui_hfV35xeGYDheSe20coMpnZKiOlNlVN83w/exec',
 
   // Kop & kota surat (nilai awal; dapat diubah di menu Penandatangan)
   KOTA: 'Sampit',
