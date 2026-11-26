@@ -30,6 +30,6 @@ window.APP_CONFIG = {
   },
 
   // Isian awal lain
-  TEMPAT: 'Kantor Dinas Pendidikan',
+  TEMPAT: 'Ruang Bidang Pembinaan Ketenagaan',
   KEPADA_PELIMPAHAN: 'Kepala BKPSDM Kabupaten Kotawaringin Timur'
 };
