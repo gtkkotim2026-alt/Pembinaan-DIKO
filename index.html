@@ -28,6 +28,10 @@ button.ghost{background:#eef2ff;color:var(--ac);padding:6px 11px;font-size:12px}
 .empty{color:var(--mu);padding:14px 0}.chips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}.chips code{background:#eef2ff;color:#3730a3;padding:2px 7px;border-radius:6px;font-size:12px}
 .qa{border-left:3px solid var(--ac);padding-left:10px;margin-bottom:6px}
 #print{display:none}
+#pv{position:fixed;inset:0;z-index:50;background:#cbd5e1;display:flex;flex-direction:column}#pv[hidden]{display:none}
+.pvh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;background:#fff;border-bottom:1px solid var(--ln)}
+#pvb{flex:1;overflow:auto;padding:16px}.paper{background:#fff;max-width:794px;margin:0 auto;padding:40px 48px;box-shadow:0 2px 10px #0003;font:12pt 'Times New Roman',serif;color:#000}
+.paper .kop{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:18px;line-height:1.35}.paper .kop .big{font-size:16pt}.paper .body{white-space:pre-wrap;line-height:1.55;text-align:justify}.paper .c{text-align:center;text-decoration:underline;margin:0 0 14px}.paper .ttd{display:flex;justify-content:flex-end;margin-top:26px}.paper .sig{display:grid;grid-template-columns:1fr 1fr;gap:26px 40px;margin-top:26px;text-align:center}.paper .mt{display:inline-block;border:1px solid #000;padding:2px 8px;font-size:9pt;margin:6px 0}
 @media(max-width:860px){body{display:block}aside{width:auto;height:auto;position:static}nav{display:flex;overflow:auto;gap:4px}nav a{white-space:nowrap}nav hr{display:none}.grid{grid-template-columns:1fr}main{padding:16px}}
 @media print{body>*:not(#print){display:none!important}#print{display:block;font:12pt 'Times New Roman',serif;color:#000}@page{size:A4;margin:18mm 20mm}
 .kop{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:18px;line-height:1.35}.kop .big{font-size:16pt}
@@ -37,6 +41,7 @@ button.ghost{background:#eef2ff;color:var(--ac);padding:6px 11px;font-size:12px}
 <aside><div class="br">PEMBINAAN DISIPLIN<small>Dinas Pendidikan Kab. Kotawaringin Timur<br>Modul untuk DIKO</small></div><nav id="nav"></nav>
 <div class="bk"><button onclick="exp()">⬇ Cadangan</button><button onclick="$('#imp').click()">⬆ Pulihkan</button><input id="imp" type="file" accept=".json" hidden onchange="imp(this)"></div></aside>
 <main id="main"></main><div id="print"></div>
+<div id="pv" hidden><div class="pvh"><b id="pvt"></b><div class="act"><button id="pvr" class="ghost" onclick="cetakDx(PV.k,PV.m,PV.r,1)" hidden>↻ Buat ulang PDF</button><button id="pvu" class="ghost" onclick="pvDl()" hidden>⬇ PDF</button><button id="pvw" class="ghost" onclick="wd(PV.k,PV.m,PV.nm)">⬇ Word</button><button onclick="pvPrint()">🖨 Cetak</button><button class="ghost" onclick="pvClose()">Tutup</button></div></div><div id="pvb"></div></div>
 <script>
 /* Pengaturan ada di config.js */
 const C=window.APP_CONFIG||{},PT=C.PENANDATANGAN||{},PW=C.PEWAWANCARA||{},API_URL=C.API_URL;
@@ -123,9 +128,18 @@ const tm=()=>({ttd_nama:DB.ttd.nama,ttd_nip:DB.ttd.nip,ttd_jabatan:DB.ttd.jab,tt
 const kop=()=>{const t=DB.ttd;return`<div class="kop"><b>${h(t.i1)}</b><br><b class="big">${h(t.i2)}</b>${t.alamat?`<br><small>${h(t.alamat)}</small>`:''}</div>`};
 const ttdB=tg=>{const t=DB.ttd;return`<div class="ttd"><div>${h(t.kota)}, ${tgl(tg)}<br>${h(t.jab)},<br><br><br><br><b><u>${h(t.nama)||'………'}</u></b><br>${h(t.pangkat)}<br>NIP. ${h(t.nip)||'………'}</div></div>`};
 const sg=(r,n,s='')=>`<div>${r}<br><br><br><br><b><u>${h(n)||'………'}</u></b><br>${s}</div>`;
-const cetak=x=>{$('#print').innerHTML=x;print()};
+let PV=null;const NM={panggil:'Pemanggilan',bap:'BAP',pern:'Surat Pernyataan',limpah:'Surat Pelimpahan'};
+const cetak=x=>prev('Pratinjau dokumen',{html:x});
+async function prev(t,o){PV=o;$('#pvt').textContent=t;$('#pv').hidden=false;const b=$('#pvb'),dx=o.k&&DB.tpl['dx_'+o.k];$('#pvw').hidden=!dx;$('#pvu').hidden=$('#pvr').hidden=true;
+if(dx){b.innerHTML='<div class="empty">Memuat pratinjau…</div>';try{if(typeof docx==='undefined')throw Error('Pustaka pratinjau Word gagal dimuat (cek koneksi internet).');b.innerHTML='';await docx.renderAsync(mk(o.k,o.m),b,null,{inWrapper:true,experimental:true,ignoreLastRenderedPageBreak:false})}catch(e){b.innerHTML='<div class="empty">Gagal membuat pratinjau: '+h(erm(e))+'</div>'}}
+else b.innerHTML='<div class="paper">'+o.html+'</div>'}
+function pvClose(){$('#pv').hidden=true;$('#pvb').innerHTML='';PV=null}
+function pvDl(){const a=document.createElement('a');a.href=PV.pdf;a.download=PV.nm+'.pdf';a.click()}
+function pvPrint(){if(!PV)return;if(PV.pdf){try{const f=$('#pvf').contentWindow;f.focus();f.print()}catch(e){open(PV.url)}return}
+$('#print').innerHTML=PV.k?'<style>@page{size:auto;margin:0}#print .docx-wrapper{background:none!important;padding:0!important}#print section.docx{box-shadow:none!important;margin:0!important}</style>'+$('#pvb').innerHTML:PV.html;setTimeout(()=>print(),250)}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&PV)pvClose()});
 const adv=(id,s)=>{const l=DB.lap.find(a=>a.id==id);if(l&&ST.indexOf(s)>ST.indexOf(l.status))l.status=s};
-const rowH=(t,s,pr,k,id,w)=>`<div class="row"><div><b>${h(t)}</b><small>${h(s)}</small></div><div>${pr?`<button class="ghost" onclick="${pr}('${id}')">Cetak</button>`:''}${w&&DB.tpl['dx_'+{wPg:'panggil',wBap:'bap',wPl:'limpah',wPn:'pern'}[w]]?`<button class="ghost" onclick="${w}('${id}')">Word</button>`:''}<button class="ghost red" onclick="del('${k}','${id}')">Hapus</button></div></div>`;
+const rowH=(t,s,pr,k,id)=>`<div class="row"><div><b>${h(t)}</b><small>${h(s)}</small></div><div>${pr?`<button class="ghost" onclick="${pr}('${id}')">Pratinjau</button>`:''}<button class="ghost red" onclick="del('${k}','${id}')">Hapus</button></div></div>`;
 const del=(k,id)=>{if(confirm('Hapus data ini?')){DB[k]=DB[k].filter(a=>a.id!=id);if(k=='lap')['pg','bap','pn','pl','dok'].forEach(x=>DB[x]=DB[x].filter(a=>a.lp!=id));save();render()}};
 const lst=(k,f,pr)=>DB[k].length?DB[k].map(f).join(''):'<div class="empty">Belum ada data.</div>';
 const pg=(t,s,body)=>`<h1>${t}</h1><p class="sub">${s}</p>${body}`;
@@ -184,26 +198,32 @@ const kt=()=>({kota:DB.ttd.kota});
 const mPg=r=>({...lm(L(r.lp)),...tm(),...kt(),no_surat:r.no,tgl_surat:tgl(r.ts),panggilan_ke:r.ke,hari_tgl:hari(r.ht),jam:r.jm,tempat:r.tm});
 const mBap=r=>({...lm(L(r.lp)),...tm(),...kt(),tgl_surat:tgl(r.ht),hari_tgl:hari(r.ht),tempat:r.tm,pw_nama:r.pw.n,pw_nip:r.pw.nip,pw_jabatan:r.pw.j,s1_nama:r.s1.n,s1_jabatan:r.s1.j,s2_nama:r.s2.n,s2_jabatan:r.s2.j,daftar_qa:r.qa.map((x,i)=>`${i+1}. Pertanyaan : ${x.q}\n    Jawaban    : ${x.a||'-'}`).join('\n\n')});
 const mPl=r=>({...lm(L(r.lp)),...tm(),...kt(),no_surat:r.no,tgl_surat:tgl(r.ts),lampiran:r.lamp,kepada:r.kpd});
-const prPg=id=>{const r=DB.pg.find(a=>a.id==id);if(DB.tpl.dx_panggil)return cetakDx('panggil',mPg(r));cetak(kop()+`<div class="body">${h(fill(DB.tpl.panggil,mPg(r)))}</div>`+ttdB(r.ts))};
-const prBap=id=>{const r=DB.bap.find(a=>a.id==id),l=L(r.lp);if(DB.tpl.dx_bap)return cetakDx('bap',mBap(r));
+const prPg=id=>{const r=DB.pg.find(a=>a.id==id);if(DB.tpl.dx_panggil)return cetakDx('panggil',mPg(r),r);cetak(kop()+`<div class="body">${h(fill(DB.tpl.panggil,mPg(r)))}</div>`+ttdB(r.ts))};
+const prBap=id=>{const r=DB.bap.find(a=>a.id==id),l=L(r.lp);if(DB.tpl.dx_bap)return cetakDx('bap',mBap(r),r);
 cetak(kop()+`<h3 class="c">BERITA ACARA PEMERIKSAAN</h3><div class="body">${h(fill(DB.tpl.bap,mBap(r)))}</div><div class="sig">${sg('Pemeriksa',r.pw.n,'NIP. '+h(r.pw.nip))}${sg('Yang Diperiksa',l.nama,'NIP. '+h(l.nip))}${sg('Saksi I',r.s1.n)}${sg('Saksi II',r.s2.n)}</div>`)};
-const prPn=id=>{const r=DB.pn.find(a=>a.id==id),l=L(r.lp);if(DB.tpl.dx_pern)return cetakDx('pern',mPn(r));cetak(kop()+`<h3 class="c">SURAT PERNYATAAN</h3><div class="body">${h(r.tx)}</div><div class="sig"><div>Mengetahui,<br>${h(DB.ttd.jab)}<br><br><br><br><b><u>${h(DB.ttd.nama)||'………'}</u></b><br>NIP. ${h(DB.ttd.nip)}</div><div>${h(DB.ttd.kota)}, ${tgl(r.tg)}<br>Yang membuat pernyataan,<br><span class="mt">Meterai</span><br><b><u>${h(l.nama)}</u></b><br>NIP. ${h(l.nip)}</div></div>`)};
-const prPl=id=>{const r=DB.pl.find(a=>a.id==id);if(DB.tpl.dx_limpah)return cetakDx('limpah',mPl(r));cetak(kop()+`<div class="body">${h(fill(DB.tpl.limpah,mPl(r)))}</div>`+ttdB(r.ts))};
+const prPn=id=>{const r=DB.pn.find(a=>a.id==id),l=L(r.lp);if(DB.tpl.dx_pern)return cetakDx('pern',mPn(r),r);cetak(kop()+`<h3 class="c">SURAT PERNYATAAN</h3><div class="body">${h(r.tx)}</div><div class="sig"><div>Mengetahui,<br>${h(DB.ttd.jab)}<br><br><br><br><b><u>${h(DB.ttd.nama)||'………'}</u></b><br>NIP. ${h(DB.ttd.nip)}</div><div>${h(DB.ttd.kota)}, ${tgl(r.tg)}<br>Yang membuat pernyataan,<br><span class="mt">Meterai</span><br><b><u>${h(l.nama)}</u></b><br>NIP. ${h(l.nip)}</div></div>`)};
+const prPl=id=>{const r=DB.pl.find(a=>a.id==id);if(DB.tpl.dx_limpah)return cetakDx('limpah',mPl(r),r);cetak(kop()+`<div class="body">${h(fill(DB.tpl.limpah,mPl(r)))}</div>`+ttdB(r.ts))};
 const MT='application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const erm=e=>{const er=e.properties&&e.properties.errors;return er?er.map(x=>x.properties.explanation||x.message).join('; '):e.message};
 function mk(k,m){const z=new PizZip(DB.tpl['dx_'+k].data.split(',')[1],{base64:true}),d=new docxtemplater(z,{delimiters:{start:'{{',end:'}}'},paragraphLoop:true,linebreaks:true,nullGetter:()=>'…'});d.render(m);return d.getZip().generate({type:'blob',mimeType:MT})}
 function wd(k,m,nm){if(!DB.tpl['dx_'+k])return alert('Unggah template .docx di menu template terlebih dahulu.');
 try{const a=document.createElement('a');a.href=URL.createObjectURL(mk(k,m));a.download=nm+'.docx';a.click()}catch(e){alert('Gagal membuat Word: '+erm(e))}}
-async function cetakDx(k,m){if(DB.tpl.cm==='unduh')return wd(k,m,({panggil:'Pemanggilan',bap:'BAP',pern:'Pernyataan',limpah:'Pelimpahan'})[k]+' - '+m.nama);try{if(typeof docx==='undefined')throw Error('Pustaka pratinjau Word gagal dimuat (cek koneksi internet).');
-$('#print').innerHTML='<style>@page{size:auto;margin:0}#print section.docx{box-shadow:none!important;margin:0!important}</style><div id="dxc"></div>';
-await docx.renderAsync(mk(k,m),$('#dxc'),null,{inWrapper:false,experimental:true,ignoreLastRenderedPageBreak:false});setTimeout(()=>print(),400)}catch(e){alert('Gagal mencetak dari template Word: '+erm(e))}}
+const b64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(',')[1]);f.readAsDataURL(b)});
+async function cetakDx(k,m,r,force){const nm=NM[k]+' - '+m.nama,src=k+r.id;let d=DB.dok.find(x=>x.src==src);
+if(force&&d){DB.dok=DB.dok.filter(x=>x.src!=src);d=null}
+$('#pvt').textContent=nm;$('#pv').hidden=false;
+if(!d){$('#pvb').innerHTML='<div class="empty">Membuat PDF dari template Word…</div>';
+try{const j=await api('disiplinPdf',{docx:await b64(mk(k,m)),nama:nm});d={id:uid(),lp:r.lp,jn:NM[k]+(k=='panggil'?' '+r.ke:'')+' (PDF)',nm:nm+'.pdf',src,data:'data:application/pdf;base64,'+j.pdf};DB.dok.push(d);save()}
+catch(e){if(confirm('Gagal membuat PDF: '+erm(e)+'\n\nTampilkan pratinjau cepat dari browser? (format bisa berbeda dari Word)'))return prev(nm,{k,m,nm});return pvClose()}}
+const url=URL.createObjectURL(await (await fetch(d.data)).blob());PV={k,m,r,nm,pdf:d.data,url};$('#pvw').hidden=$('#pvu').hidden=$('#pvr').hidden=false;
+$('#pvb').innerHTML=`<iframe id="pvf" src="${url}" style="width:100%;height:100%;border:0;background:#fff"></iframe>`}
 const wPg=id=>{const r=DB.pg.find(a=>a.id==id);wd('panggil',mPg(r),`Pemanggilan ${r.ke} - ${L(r.lp).nama}`)};
 const wBap=id=>{const r=DB.bap.find(a=>a.id==id);wd('bap',mBap(r),`BAP - ${L(r.lp).nama}`)};
 const mPn=r=>({...lm(L(r.lp)),...tm(),...kt(),tgl_surat:tgl(r.tg),isi:r.tx});
 const wPn=id=>{const r=DB.pn.find(a=>a.id==id);wd('pern',mPn(r),`Pernyataan - ${L(r.lp).nama}`)};
 const wPl=id=>{const r=DB.pl.find(a=>a.id==id);wd('limpah',mPl(r),`Pelimpahan - ${L(r.lp).nama}`)};
 function upTpl(k,i){const f=i.files[0];if(!f)return;if(f.size>1e6)return alert('Ukuran template maksimal 1 MB.');const r=new FileReader();r.onload=()=>{DB.tpl['dx_'+k]={nm:f.name,data:r.result};if(save())render()};r.readAsDataURL(f)}
-const dxBox=k=>{const d=DB.tpl['dx_'+k];return`<div style="border:1px dashed #94a3b8;border-radius:10px;padding:12px;margin-bottom:14px"><b style="font-size:12px">Template Word (.docx)</b>${d?`<div class="row"><div><b>${h(d.nm)}</b><small>Aktif · tombol Cetak memakai template ini; tombol Word mengunduh .docx</small></div><div><button class="ghost red" onclick="delete DB.tpl['dx_${k}'];save();render()">Hapus</button></div></div>`:'<small style="display:block;color:var(--mu);margin:4px 0">Belum ada. Unggah file .docx yang berisi kode seperti {{nama}}.</small>'}<input type="file" accept=".docx" onchange="upTpl('${k}',this)"><label style="display:flex;gap:8px;align-items:flex-start;font-weight:500;margin:10px 0 0"><input type="checkbox" style="width:auto;margin:3px 0 0" ${DB.tpl.cm==='unduh'?'checked':''} onchange="DB.tpl.cm=this.checked?'unduh':'';save()"><span>Tombol Cetak mengunduh file Word (format paling akurat; cetak dari Microsoft Word). Berlaku untuk semua surat.</span></label></div>`};
+const dxBox=k=>{const d=DB.tpl['dx_'+k];return`<div style="border:1px dashed #94a3b8;border-radius:10px;padding:12px;margin-bottom:14px"><b style="font-size:12px">Template Word (.docx)</b>${d?`<div class="row"><div><b>${h(d.nm)}</b><small>Aktif · dipakai untuk membuat PDF, pratinjau, dan cetak</small></div><div><button class="ghost red" onclick="delete DB.tpl['dx_${k}'];save();render()">Hapus</button></div></div>`:'<small style="display:block;color:var(--mu);margin:4px 0">Belum ada. Unggah file .docx yang berisi kode seperti {{nama}}.</small>'}<input type="file" accept=".docx" onchange="upTpl('${k}',this)"></div>`};
 function exp(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB)],{type:'application/json'}));a.download='pembinaan-disiplin-'+today+'.json';a.click()}
 function imp(i){const f=i.files[0];if(!f||!confirm('Data saat ini akan diganti dengan cadangan. Lanjutkan?'))return;const r=new FileReader();r.onload=()=>{try{DB=JSON.parse(r.result);DB.tpl={...D,...DB.tpl};save();render()}catch(e){alert('File cadangan tidak valid.')}};r.readAsText(f)}
 function render(){const k=P[location.hash.slice(1)]?location.hash.slice(1):'lap';$('#nav').innerHTML=M.map(([a,t],i)=>`<a href="#${a}" class="${a==k?'on':''}"><i>${i+1}</i>${t}</a>${i==4||i==7?'<hr>':''}`).join('');$('#main').innerHTML=P[k]();scrollTo(0,0)}
