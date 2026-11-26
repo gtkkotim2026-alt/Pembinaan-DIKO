@@ -3,6 +3,11 @@ window.APP_CONFIG = {
   // URL Web App Google Apps Script DIKO (sama dengan APP_CONFIG.API_URL di config.js DIKO)
   API_URL: 'https://script.google.com/macros/s/AKfycbwLeWoTUL7AaKJko5PMQ_o65ZTFFUM9qJui_hfV35xeGYDheSe20coMpnZKiOlNlVN83w/exec',
 
+  // Gambar (letakkan file di folder yang sama dengan index.html; kosongkan jika tidak dipakai)
+  LOGO_KOTIM: 'logo-kotim.png',    // lambang Kab. Kotawaringin Timur (sidebar)
+  LOGO_DISDIK: 'logo-disdik.png',  // logo Tut Wuri Handayani / Disdik (header)
+  GEDUNG: 'gedung.png',            // foto kantor Dinas (banner)
+
   // Kop & kota surat (nilai awal; dapat diubah di menu Penandatangan)
   KOTA: 'Sampit',
   KOP1: 'PEMERINTAH KABUPATEN KOTAWARINGIN TIMUR',
